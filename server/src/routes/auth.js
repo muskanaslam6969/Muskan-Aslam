@@ -12,7 +12,7 @@ authRouter.post('/register', async (req, res, next) => {
     const email = parsed.email.toLowerCase();
     if (await prisma.user.findUnique({ where: { email } })) return res.status(409).json({ message: 'An account with this email already exists.' });
     const passwordHash = await bcrypt.hash(parsed.password, 12);
-    const user = await prisma.user.create({ data: { name: parsed.name, email, passwordHash, role: parsed.role } });
+    const user = await prisma.user.create({ data: { name: parsed.name, email, passwordHash, role: parsed.role, ...(parsed.role === 'STUDENT' ? { student: { create: { rollNumber: `STU-${Date.now()}-${Math.floor(Math.random()*1000)}` } } } : { teacher: { create: { employeeNumber: `TCH-${Date.now()}-${Math.floor(Math.random()*1000)}` } } }) } });
     res.status(201).json({ user: { id: user.id, name: user.name, email: user.email, role: user.role } });
   } catch (e) { next(e); }
 });
