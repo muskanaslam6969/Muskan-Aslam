@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { authRouter } from './routes/auth.js';
 import { dashboardRouter } from './routes/dashboard.js';
+import { resourcesRouter } from './routes/resources.js';
 import { errorHandler, notFound } from './middleware/errors.js';
 
 const app = express();
@@ -14,6 +15,7 @@ app.use(express.json({ limit: '1mb' }));
 app.use('/api/auth', rateLimit({ windowMs: 15 * 60 * 1000, limit: 30, standardHeaders: true, legacyHeaders: false }), authRouter);
 app.get('/api/health', (_req, res) => res.json({ status: 'ok', service: 'MUSKAN API' }));
 app.use('/api/dashboard', dashboardRouter);
+app.use('/api', resourcesRouter);
 app.use(notFound);
 app.use(errorHandler);
 const port = Number(process.env.PORT || 4000);
