@@ -1,0 +1,20 @@
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import { authRouter } from './routes/auth.js';
+import { dashboardRouter } from './routes/dashboard.js';
+import { errorHandler, notFound } from './middleware/errors.js';
+
+const app = express();
+app.use(helmet());
+app.use(cors({ origin: process.env.CLIENT_ORIGIN?.split(',') || 'http://localhost:5173', credentials: true }));
+app.use(express.json({ limit: '1mb' }));
+app.use('/api/auth', rateLimit({ windowMs: 15 * 60 * 1000, limit: 30, standardHeaders: true, legacyHeaders: false }), authRouter);
+app.get('/api/health', (_req, res) => res.json({ status: 'ok', service: 'MUSKAN API' }));
+app.use('/api/dashboard', dashboardRouter);
+app.use(notFound);
+app.use(errorHandler);
+const port = Number(process.env.PORT || 4000);
+app.listen(port, () => console.log(`MUSKAN API listening on :${port}`));
