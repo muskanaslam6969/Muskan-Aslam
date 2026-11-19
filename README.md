@@ -14,16 +14,21 @@ MUSKAN is an education-management platform foundation for connecting campus admi
 
 - [x] Development branch created
 - [x] React/Vite application shell and responsive dashboard styling
-- [x] Login interface connected to the API
+- [x] Public MUSKAN landing page with feature and role sections
+- [x] Login and student/teacher self-registration screens
+- [x] Registration creates the matching student or teacher profile
+- [x] Responsive dashboard shell with role-specific navigation and theme toggle
 - [x] Express server, health endpoint and security middleware
 - [x] JWT login and registration endpoints with bcrypt password hashing
 - [x] Prisma relational schema for users, students, teachers, departments, semesters, courses, enrollments, attendance, assignments, submissions, materials, exams, results, notifications and messages
 - [x] Role-checked, database-backed dashboard summary endpoint
+- [x] Authenticated, role-aware list/create APIs for students, teachers and courses (admin-only creation)
+- [x] GitHub Actions workflow for Prisma schema validation and frontend build
 - [ ] Full CRUD screens and APIs for every management module
 - [ ] Assignment file storage, messaging UI, notification UI and reporting screens
 - [ ] Automated integration/permission tests and production deployment
 
-**Important:** This repository is an in-progress foundation, not a finished production system. The chart on the current dashboard is explicitly sample preview data; summary cards request API data. No real campus records are seeded. A PostgreSQL database and secrets are required before authentication and database-backed screens can run.
+**Important:** This repository is an in-progress foundation, not a finished production system. The public homepage includes an illustrative chart; the signed-in dashboard also labels its chart as sample preview data. Summary cards request API data. No real campus records are seeded. A PostgreSQL database and secrets are required before authentication and database-backed screens can run.
 
 ## Requirements
 
@@ -79,6 +84,9 @@ MUSKAN is an education-management platform foundation for connecting campus admi
 - `POST /api/auth/login` — authenticate and receive an eight-hour JWT
 - `GET /api/auth/me` — return the authenticated account
 - `GET /api/dashboard/summary` — role-aware summary based on PostgreSQL records
+- `GET /api/students`, `POST /api/students` — student listing and admin provisioning
+- `GET /api/teachers`, `POST /api/teachers` — teacher listing and admin provisioning
+- `GET /api/courses`, `POST /api/courses` — course listing and admin provisioning
 - `GET /api/health` — API health check
 
 Registration does not allow public administrator creation. Create an administrator through a controlled database/admin provisioning process before using admin-only operations.
