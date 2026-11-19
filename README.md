@@ -1,52 +1,106 @@
-# Muskan Aslam — Personal Portfolio Website
+# MUSKAN — Student–Teacher Management System
 
-Welcome to my personal portfolio website repository! This project is a place to introduce myself, present my skills, and showcase the projects I work on.
+**Learn Together. Grow Together.**
 
-## About
+MUSKAN is an education-management platform foundation for connecting campus administrators, teachers, and students through one workspace.
 
-I'm Muskan Aslam. This portfolio is intended to share my learning journey, interests, and work in technology and development.
+## Project structure
 
-## Website Sections
+- `client/` — React 18 + Vite interface, Recharts, Lucide icons, responsive styling
+- `server/` — Express API, JWT authentication, request validation and Prisma client
+- `server/prisma/schema.prisma` — PostgreSQL data model
 
-The portfolio can include the following sections:
+## Current implementation status
 
-- **Home** — a short introduction.
-- **About Me** — background, interests, and learning goals.
-- **Skills** — technologies and tools I have experience with.
-- **Projects** — selected academic and personal projects.
-- **Contact** — ways to connect with me.
+- [x] Development branch created
+- [x] React/Vite application shell and responsive dashboard styling
+- [x] Login interface connected to the API
+- [x] Express server, health endpoint and security middleware
+- [x] JWT login and registration endpoints with bcrypt password hashing
+- [x] Prisma relational schema for users, students, teachers, departments, semesters, courses, enrollments, attendance, assignments, submissions, materials, exams, results, notifications and messages
+- [x] Role-checked, database-backed dashboard summary endpoint
+- [ ] Full CRUD screens and APIs for every management module
+- [ ] Assignment file storage, messaging UI, notification UI and reporting screens
+- [ ] Automated integration/permission tests and production deployment
 
-## Technologies
+**Important:** This repository is an in-progress foundation, not a finished production system. The chart on the current dashboard is explicitly sample preview data; summary cards request API data. No real campus records are seeded. A PostgreSQL database and secrets are required before authentication and database-backed screens can run.
 
-Add or update this list to match the technologies actually used in the website:
+## Requirements
 
-- HTML
-- CSS
-- JavaScript
+- Node.js 20+
+- PostgreSQL 15+
+- npm 10+
 
-## Run Locally
+## Local setup
 
-1. Clone this repository:
+1. Clone the repository and switch to the development branch:
+
    ```bash
    git clone https://github.com/muskanaslam6969/Muskan-Aslam.git
+   cd Muskan-Aslam
+   git checkout development
    ```
-2. Open the project folder.
-3. Open `index.html` in your web browser.
 
-If the project uses a build tool or framework, add its installation and run commands here.
+2. Install workspace dependencies:
 
-## Live Website
+   ```bash
+   npm install
+   ```
 
-The live website link will be added here after GitHub Pages is enabled and the site has been successfully published.
+3. Configure the server environment:
 
-## Repository
+   ```bash
+   cp server/.env.example server/.env
+   ```
 
-[View this project on GitHub](https://github.com/muskanaslam6969/Muskan-Aslam)
+   Set a valid PostgreSQL `DATABASE_URL`, a unique random `JWT_SECRET` (at least 32 characters), and the client origin. Never commit `.env`.
 
-## Contact
+4. Generate Prisma Client and create the database schema:
 
-- GitHub: [@muskanaslam6969](https://github.com/muskanaslam6969)
+   ```bash
+   npm run db:generate
+   npm run db:migrate
+   ```
 
----
+5. Start both applications:
 
-*Thank you for visiting my portfolio repository!*
+   ```bash
+   npm run dev
+   ```
+
+   - Frontend: http://localhost:5173
+   - API health: http://localhost:4000/api/health
+
+6. Set `VITE_API_URL` in `client/.env` if your API is hosted somewhere other than `http://localhost:4000/api`.
+
+## API foundation
+
+- `POST /api/auth/register` — create a student or teacher account
+- `POST /api/auth/login` — authenticate and receive an eight-hour JWT
+- `GET /api/auth/me` — return the authenticated account
+- `GET /api/dashboard/summary` — role-aware summary based on PostgreSQL records
+- `GET /api/health` — API health check
+
+Registration does not allow public administrator creation. Create an administrator through a controlled database/admin provisioning process before using admin-only operations.
+
+## Database model
+
+The Prisma schema defines role-based users and linked academic records. Apply migrations against your own PostgreSQL database before starting authenticated API workflows.
+
+## Security notes
+
+- Passwords are hashed with bcrypt.
+- JWTs are signed using `JWT_SECRET`.
+- Authenticated endpoints validate bearer tokens.
+- Role checks are enforced on the server.
+- Helmet, CORS, request-size limits and login rate limiting are enabled.
+- Uploaded files and production object storage are not implemented yet.
+- Use HTTPS, managed secrets, backups, monitoring and a production review before real student data is entered.
+
+## Deployment
+
+Deploy the frontend and API as separate services, provision PostgreSQL, configure environment variables in the hosting provider, run Prisma migrations as a release step, and set the frontend's `VITE_API_URL` to the deployed API URL. GitHub Pages alone cannot host the Express API or PostgreSQL database.
+
+## Branding
+
+**MUSKAN** · Learn Together. Grow Together.
