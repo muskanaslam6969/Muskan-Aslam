@@ -1,0 +1,22 @@
+name: MUSKAN CI
+on:
+  push:
+    branches: [main, development]
+  pull_request:
+    branches: [main, development]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm install
+      - name: Validate Prisma schema
+        run: npx prisma validate --schema server/prisma/schema.prisma
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/muskan
+      - name: Build frontend
+        run: npm run build
