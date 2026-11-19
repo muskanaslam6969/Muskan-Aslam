@@ -1,0 +1,179 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+
+enum Role { ADMIN TEACHER STUDENT }
+enum AttendanceStatus { PRESENT ABSENT LATE EXCUSED }
+enum SubmissionStatus { SUBMITTED GRADED RETURNED }
+enum NotificationType { GENERAL ASSIGNMENT RESULT ANNOUNCEMENT }
+
+model User {
+  id String @id @default(cuid())
+  name String
+  email String @unique
+  passwordHash String
+  role Role
+  phone String?
+  avatarUrl String?
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  studentProfile Student?
+  teacherProfile Teacher?
+  notifications Notification[] @relation("NotificationRecipient")
+  sentMessages Message[] @relation("MessageSender")
+  receivedMessages Message[] @relation("MessageRecipient")
+}
+model Student {
+  id String @id @default(cuid())
+  userId String @unique
+  rollNumber String @unique
+  departmentId String?
+  semesterId String?
+  user User @relation(fields:[userId], references:[id], onDelete:Cascade)
+  department Department? @relation(fields:[departmentId], references:[id])
+  semester Semester? @relation(fields:[semesterId], references:[id])
+  enrollments Enrollment[]
+  attendance Attendance[]
+  submissions Submission[]
+  results Result[]
+}
+model Teacher {
+  id String @id @default(cuid())
+  userId String @unique
+  employeeNumber String @unique
+  departmentId String?
+  user User @relation(fields:[userId], references:[id], onDelete:Cascade)
+  department Department? @relation(fields:[departmentId], references:[id])
+  courses Course[]
+  exams Exam[] @relation("ExamCreator")
+  assignments Assignment[]
+}
+model Department {
+  id String @id @default(cuid())
+  name String @unique
+  code String @unique
+  students Student[]
+  teachers Teacher[]
+  courses Course[]
+}
+model Semester {
+  id String @id @default(cuid())
+  name String
+  startsAt DateTime
+  endsAt DateTime
+  students Student[]
+  courses Course[]
+}
+model Course {
+  id String @id @default(cuid())
+  code String @unique
+  title String
+  description String?
+  credits Int @default(3)
+  departmentId String?
+  semesterId String?
+  teacherId String?
+  department Department? @relation(fields:[departmentId], references:[id])
+  semester Semester? @relation(fields:[semesterId], references:[id])
+  teacher Teacher? @relation(fields:[teacherId], references:[id])
+  enrollments Enrollment[]
+  attendance Attendance[]
+  assignments Assignment[]
+  exams Exam[]
+  materials StudyMaterial[]
+}
+model Enrollment {
+  id String @id @default(cuid())
+  studentId String
+  courseId String
+  enrolledAt DateTime @default(now())
+  student Student @relation(fields:[studentId], references:[id], onDelete:Cascade)
+  course Course @relation(fields:[courseId], references:[id], onDelete:Cascade)
+  @@unique([studentId, courseId])
+}
+model Attendance {
+  id String @id @default(cuid())
+  studentId String
+  courseId String
+  date DateTime
+  status AttendanceStatus
+  markedById String
+  student Student @relation(fields:[studentId], references:[id], onDelete:Cascade)
+  course Course @relation(fields:[courseId], references:[id], onDelete:Cascade)
+  @@unique([studentId, courseId, date])
+}
+model Assignment {
+  id String @id @default(cuid())
+  title String
+  description String?
+  dueAt DateTime?
+  courseId String
+  teacherId String
+  createdAt DateTime @default(now())
+  course Course @relation(fields:[courseId], references:[id], onDelete:Cascade)
+  teacher Teacher @relation(fields:[teacherId], references:[id], onDelete:Cascade)
+  submissions Submission[]
+}
+model Submission {
+  id String @id @default(cuid())
+  assignmentId String
+  studentId String
+  fileUrl String?
+  textContent String?
+  status SubmissionStatus @default(SUBMITTED)
+  score Float?
+  feedback String?
+  submittedAt DateTime @default(now())
+  assignment Assignment @relation(fields:[assignmentId], references:[id], onDelete:Cascade)
+  student Student @relation(fields:[studentId], references:[id], onDelete:Cascade)
+  @@unique([assignmentId, studentId])
+}
+model StudyMaterial {
+  id String @id @default(cuid())
+  title String
+  fileUrl String
+  courseId String
+  uploadedAt DateTime @default(now())
+  course Course @relation(fields:[courseId], references:[id], onDelete:Cascade)
+}
+model Exam {
+  id String @id @default(cuid())
+  title String
+  startsAt DateTime
+  totalMarks Float
+  courseId String
+  createdById String
+  course Course @relation(fields:[courseId], references:[id], onDelete:Cascade)
+  createdBy Teacher @relation("ExamCreator", fields:[createdById], references:[id])
+  results Result[]
+}
+model Result {
+  id String @id @default(cuid())
+  examId String
+  studentId String
+  marks Float
+  grade String?
+  published Boolean @default(false)
+  exam Exam @relation(fields:[examId], references:[id], onDelete:Cascade)
+  student Student @relation(fields:[studentId], references:[id], onDelete:Cascade)
+  @@unique([examId, studentId])
+}
+model Notification {
+  id String @id @default(cuid())
+  userId String
+  title String
+  body String
+  type NotificationType @default(GENERAL)
+  readAt DateTime?
+  createdAt DateTime @default(now())
+  user User @relation("NotificationRecipient", fields:[userId], references:[id], onDelete:Cascade)
+}
+model Message {
+  id String @id @default(cuid())
+  senderId String
+  recipientId String
+  body String
+  sentAt DateTime @default(now())
+  sender User @relation("MessageSender", fields:[senderId], references:[id], onDelete:Cascade)
+  recipient User @relation("MessageRecipient", fields:[recipientId], references:[id], onDelete:Cascade)
+}
