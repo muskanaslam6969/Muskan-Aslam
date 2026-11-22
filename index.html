@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DeepBlue Cards – Flip, learn and remember</title>
+  <meta name="description" content="DeepBlue Cards is a navy blue flashcard studio. Flip cards, mark what you know and track your progress right in the browser.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body id="top">
+
+  <header class="nav">
+    <a class="brand" href="#top">DeepBlue<span>Cards</span></a>
+    <button class="menu-btn" id="menuBtn" aria-label="Toggle menu">☰</button>
+    <nav id="menu">
+      <a href="#decks">Decks</a>
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#faq">FAQ</a>
+      <a href="#demo" class="btn small">Study now</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-text">
+        <span class="tag">Navy blue flashcard studio</span>
+        <h1>Flip. Learn. <em>Remember.</em></h1>
+        <p>Pick a deck, flip the card and tell us if you knew it. Cards you miss come back again until they stick. No sign-up, nothing to install.</p>
+        <div class="actions">
+          <a href="#demo" class="btn">Open the study deck</a>
+          <a href="#how" class="btn ghost">How it works</a>
+        </div>
+      </div>
+      <div class="hero-card" aria-hidden="true">
+        <div class="mini-card">
+          <small>Sample card · Geography</small>
+          <h3>Capital of Pakistan?</h3>
+          <p>Tap to reveal → <b>Islamabad</b></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="decks" class="section">
+      <h2>Decks for every subject</h2>
+      <p class="lead">Choose a topic and start flipping.</p>
+      <div class="grid">
+        <article class="card"><div class="icon">🧪</div><h3>Science</h3><p>Cells, atoms, forces and the periodic table.</p></article>
+        <article class="card"><div class="icon">🧮</div><h3>Maths</h3><p>Formulas, tables and quick-fire definitions.</p></article>
+        <article class="card"><div class="icon">🌐</div><h3>World facts</h3><p>Countries, capitals, rivers and landmarks.</p></article>
+        <article class="card"><div class="icon">💻</div><h3>Tech terms</h3><p>Hardware, software, web and coding words.</p></article>
+        <article class="card"><div class="icon">✍️</div><h3>Vocabulary</h3><p>New English words with clear meanings.</p></article>
+        <article class="card"><div class="icon">🗓️</div><h3>History</h3><p>Dates, people and turning points.</p></article>
+      </div>
+    </section>
+
+    <section id="how" class="section alt">
+      <h2>Four steps to a better memory</h2>
+      <ol class="steps">
+        <li><span>1</span><h3>Choose a deck</h3><p>Start with any subject you like.</p></li>
+        <li><span>2</span><h3>Flip the card</h3><p>Read the question, think, then reveal the answer.</p></li>
+        <li><span>3</span><h3>Rate yourself</h3><p>Press “Got it” or “Again” honestly.</p></li>
+        <li><span>4</span><h3>Repeat</h3><p>Missed cards return until you know them.</p></li>
+      </ol>
+    </section>
+
+    <section id="features" class="section">
+      <h2>Made for calm, focused study</h2>
+      <div class="grid">
+        <article class="card"><h3>3D card flip</h3><p>A smooth flip animation on every card.</p></article>
+        <article class="card"><h3>Smart repeat</h3><p>Missed cards are put back in the pile.</p></article>
+        <article class="card"><h3>Progress bar</h3><p>See how many cards you have mastered.</p></article>
+        <article class="card"><h3>Shuffle</h3><p>Mix the deck so you never memorise the order.</p></article>
+        <article class="card"><h3>Keyboard keys</h3><p>Space flips, ← needs review, → got it.</p></article>
+        <article class="card"><h3>Saved best</h3><p>Your best session is stored in your browser.</p></article>
+      </div>
+    </section>
+
+    <section id="demo" class="section alt">
+      <h2>Study demo</h2>
+      <p class="lead">Choose a deck, then click the card or press Space to flip it.</p>
+
+      <div class="study">
+        <div class="toolbar">
+          <select id="deckSelect" aria-label="Choose deck"></select>
+          <button class="btn ghost small" id="shuffleBtn">🔀 Shuffle</button>
+          <button class="btn ghost small" id="resetBtn">↺ Restart</button>
+        </div>
+
+        <div class="progress"><div id="bar"></div></div>
+        <p class="stats" id="stats"></p>
+
+        <div class="flip" id="flip" tabindex="0" role="button" aria-label="Flip card">
+          <div class="flip-inner" id="flipInner">
+            <div class="face front"><small>Question</small><h3 id="qText"></h3><span class="hint">Click to flip</span></div>
+            <div class="face back"><small>Answer</small><h3 id="aText"></h3></div>
+          </div>
+        </div>
+
+        <div class="rate" id="rate">
+          <button class="btn again" id="againBtn">← Again</button>
+          <button class="btn good" id="gotBtn">Got it →</button>
+        </div>
+
+        <div class="done" id="done" hidden>
+          <h3>Deck complete 🎉</h3>
+          <p id="doneText"></p>
+          <button class="btn" id="againDeck">Study again</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="section">
+      <h2>Common questions</h2>
+      <details><summary>Do I need an account?</summary><p>No. Open the page and start studying.</p></details>
+      <details><summary>What does “Again” do?</summary><p>The card goes to the back of the pile so you see it again before the deck ends.</p></details>
+      <details><summary>Where is my best score saved?</summary><p>Only in your own browser using localStorage. Nothing is sent to a server.</p></details>
+      <details><summary>Can I add my own cards?</summary><p>Yes. Open <code>script.js</code> and add new questions to the <code>DECKS</code> list.</p></details>
+    </section>
+
+    <section class="cta">
+      <h2>Ready to remember more?</h2>
+      <p>Open the demo deck and flip your first card.</p>
+      <a href="#demo" class="btn">Study now</a>
+    </section>
+  </main>
+
+  <footer>© <span id="year"></span> DeepBlue Cards · Flashcards, made simple</footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
